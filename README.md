@@ -2,6 +2,9 @@
 [![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=11936497&assignment_repo_type=AssignmentRepo)
 # Deep Learning E1394 - Problem Set 1
 
+## Overleaf
+Our LaTeX file can be accessed [here](https://www.overleaf.com/2492366563vgtkbkrfwpht). 
+
 ## Downloading the assignment
 Clone the assigment repository which was created for your team. 
 ```
@@ -54,3 +57,6 @@ If you have important questions or believe to have spotted an error, please open
     * https://pythonalgos.com/create-a-neural-network-from-scratch-in-python-3/
     * https://github.com/casperbh96/Neural-Network-From-Scratch/blob/master/NN_From_Scratch.ipynb
     * https://www.codingame.com/playgrounds/59631/neural-network-xor-example-from-scratch-no-libs
+ 
+## Sources
+* [May & Bart. *Business Calculus with Excel*, Ch. 6.3 Critical Points and Extrema](https://mathstat.slu.edu/~may/ExcelCalculus/sec-6-3-CriticalPointsExtrema.html)
