@@ -16,42 +16,37 @@ class NeuralNetworkTorch(nn.Module):
         '''
         
         super().__init__()
-        self.sizes = sizes
+
         self.epochs = epochs
         self.learning_rate = learning_rate
         self.random_state = random_state   
         torch.manual_seed(self.random_state)
 
-        self.layer1 = nn.Linear(self.sizes[0], self.sizes[1])
-        self.layer2 = nn.Linear(self.sizes[1], self.sizes[2])
-        self.layer3 = nn.Linear(self.sizes[2], self.sizes[3])
-        self.layers = [self.layer1, self.layer2, self.layer3]
-
+        self.layers = nn.ModuleList()
+        for i in range(len(sizes)-1):
+            self.layers.append(nn.Linear(sizes[i], sizes[i+1]))
 
         self.activation_func = torch.sigmoid
         self.output_func = torch.softmax
         self.loss_func = nn.BCEWithLogitsLoss()
-        self.optimizer = optim.SGD(self.parameters(), lr=learning_rate)
+        self.optimizer = optim.SGD(self.parameters(), lr=self.learning_rate)
 
 
     def _forward_pass(self, x_train):
         '''
         TODO: The method should return the output of the network.
         '''
-        x_train = self.activation_func(self.layer1(x_train))
-        x_train = self.activation_func(self.layer2(x_train))
-        x_train = self.output_func(self.layer3(x_train))
-        return x_train
-    
+        for layer in self.layers[:-1]:
+            x_train = self.activation_func(layer(x_train))
+        return self.layers[-1](x_train)
     
 
     def _backward_pass(self, y_train, output):
         '''
         TODO: Implement the backpropagation algorithm responsible for updating the weights of the neural network.
         '''
-        loss = self.loss_func(output, y_train)
+        loss = self.loss_func(output, y_train.float())
         loss.backward()
-        return loss
     
 
     def _update_weights(self):
@@ -59,8 +54,6 @@ class NeuralNetworkTorch(nn.Module):
         TODO: Update the network weights according to stochastic gradient descent.
         '''
         self.optimizer.step()
-        self.optimizer.zero_grad()
-        return self.parameters()
     
 
     def _flatten(self, x):
@@ -85,7 +78,9 @@ class NeuralNetworkTorch(nn.Module):
         TODO: Implement the prediction making of the network.
         The method should return the index of the most likeliest output class.
         '''
-        return torch.argmax(self._forward_pass(x))
+        x = self._flatten(x)
+        output = self._forward_pass(x)
+        return torch.argmax(output, axis=1)
     
 
     def fit(self, train_loader, val_loader):
