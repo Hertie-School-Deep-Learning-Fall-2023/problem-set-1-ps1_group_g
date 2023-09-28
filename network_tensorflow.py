@@ -1,8 +1,6 @@
 import tensorflow as tf
 tf.config.run_functions_eagerly(True)
 
-
-
 class NeuralNetworkTf(tf.keras.Sequential):
 
   def __init__(self, sizes, random_state=1):
