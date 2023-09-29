@@ -57,9 +57,10 @@ class TimeBasedLearningRate(tf.keras.optimizers.schedules.LearningRateSchedule):
   
   
   
-  '''Commenting on the mistakes in the Network class:
-  1. The activation function in the Network class: Considering that we are dealing with a multi-class classification problem, the activation function of the output layer should be softmax, whearas the activation function of the hidden layers can be either sigmoid or relu. The softmax activation function is usually implemented in the output layers as its result can be interpreted as a probability distribution.
-  2. The loss function in the Network class: As we are dealing with a multi-class classification problem, the most appropriate loss function would be categorical crossentropy. The current loss function - binary crossentropy is used for binary classification problems and if implemented in a multi-class classification problem, it would result in a very high loss value and would not allow the model to learn or perform well.
-  3. Validation data: Initially, the validation data argument was not passed into the fit method. This would result in the model not being validated and consecutively not allowing the model to learn well.'''
+  '''Commenting on the mistakes and what was missing in the Network class:
+  1. The activation functions for the hidden layers and output layer were missplaced. As per usual methods and also our classification case, the output layer should have a softmax function and for the hidden layers should be sigmoid functions. This allows for the output layer to show us how likely a data point is to be in a certain class and the hidden layers to show us how likely a data point is to be in a certain class given the previous layer.
+  2. The loss function previously was Binary Cross Entropy, which is used for binary classification. For multi-class classification, we should use Categorical Cross Entropy. BCE calculates the average of the loss for each data point, while CCE calculates the sum of the loss for each data point, which is what we want since we are dealing with a multi-class classification problem.
+  3. The validation data was substituted with x_val and y_val in order to be able to extract the metrics of the model on the validation data as well. In addition a history dictionary was created in order to store the metrics of the model on the training and validation data.
+  '''
 
     
