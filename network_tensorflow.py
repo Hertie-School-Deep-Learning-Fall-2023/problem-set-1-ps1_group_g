@@ -1,4 +1,5 @@
 import tensorflow as tf
+import time
 tf.config.run_functions_eagerly(True)
 
 class NeuralNetworkTf(tf.keras.Sequential):
@@ -15,13 +16,28 @@ class NeuralNetworkTf(tf.keras.Sequential):
       else:
         self.add(tf.keras.layers.Dense(sizes[i], activation='sigmoid'))
 
-  def compile_and_fit(self, x_train, y_train, validation_data=None, epochs=50, learning_rate=0.01, batch_size=1):
+  def compile_and_fit(self, x_train, y_train, x_val=None, y_val=None, epochs=50, learning_rate=0.01, batch_size=1):
     optimizer = tf.keras.optimizers.legacy.SGD(learning_rate=learning_rate)
     loss_function = tf.keras.losses.CategoricalCrossentropy()
     eval_metrics = ['accuracy']
 
     self.compile(optimizer=optimizer, loss=loss_function, metrics=eval_metrics)
-    history = self.fit(x_train, y_train, validation_data=validation_data, epochs=epochs, batch_size=batch_size)
+
+    start_time = time.time()
+    history = {'accuracy':[], 'val_accuracy':[]}
+
+    for epoch in range(epochs):
+      train_loss, train_accuracy = self.train_on_batch(x_train, y_train)
+      history['accuracy'].append(train_accuracy)
+      if x_val is not None:
+        val_loss, val_accuracy = self.evaluate(x_val, y_val)
+        history['val_accuracy'].append(val_accuracy)
+      current_learning_rate = learning_rate if not isinstance(learning_rate, TimeBasedLearningRate) else learning_rate(epoch)
+      print(f'Epoch: {epoch + 1}, '
+            f'learning rate: {current_learning_rate:.4f}, '
+            f'train accuracy: {train_accuracy:.4f}, '
+            f'val accuracy: {val_accuracy:.4f}')
+        
     return history
 
 class TimeBasedLearningRate(tf.keras.optimizers.schedules.LearningRateSchedule):
