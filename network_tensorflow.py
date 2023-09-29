@@ -16,7 +16,7 @@ class NeuralNetworkTf(tf.keras.Sequential):
         self.add(tf.keras.layers.Dense(sizes[i], activation='sigmoid'))
 
   def compile_and_fit(self, x_train, y_train, validation_data=None, epochs=50, learning_rate=0.01, batch_size=1):
-    optimizer = tf.keras.optimizers.SGD(learning_rate=learning_rate)
+    optimizer = tf.keras.optimizers.legacy.SGD(learning_rate=learning_rate)
     loss_function = tf.keras.losses.CategoricalCrossentropy()
     eval_metrics = ['accuracy']
 
@@ -29,23 +29,17 @@ class TimeBasedLearningRate(tf.keras.optimizers.schedules.LearningRateSchedule):
   positive integer (initial_learning_rate) and at each step reduces the
   learning rate by 1 until minimal learning rate of 1 is reached.
     '''
-
-  def __init__(self, initial_learning_rate, decay_factor=0.9):
+  def __init__(self, initial_learning_rate):
     super().__init__()
     self.initial_learning_rate = initial_learning_rate
-    self.min_learning_rate = 1
-    self.decay_factor = decay_factor
 
   def __call__(self, step):
-    learning_rate = self.initial_learning_rate * (self.decay_factor ** step)
-    if learning_rate < self.min_learning_rate:
-      learning_rate = self.min_learning_rate
-    return learning_rate
+    return tf.math.maximum(1, self.initial_learning_rate - step)
   
   def get_config(self):
     return {'initial_learning_rate': self.initial_learning_rate}
- 
-
+  
+  
   
   '''Commenting on the mistakes in the Network class:
   1. The activation function in the Network class: Considering that we are dealing with a multi-class classification problem, the activation function of the output layer should be softmax, whearas the activation function of the hidden layers can be either sigmoid or relu. The softmax activation function is usually implemented in the output layers as its result can be interpreted as a probability distribution.
