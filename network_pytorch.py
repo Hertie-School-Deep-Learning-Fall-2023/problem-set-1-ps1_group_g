@@ -24,7 +24,7 @@ class NeuralNetworkTorch(nn.Module):
 
         self.layers = nn.ModuleList()
         for i in range(len(sizes)-1):
-            self.layers.append(nn.Linear(sizes[i], sizes[i+1]))
+            self.layers.append(nn.Linear(sizes[i], sizes[i+1])) # adding the layers to the model
 
         self.activation_func = torch.sigmoid
         self.output_func = torch.softmax
@@ -38,7 +38,7 @@ class NeuralNetworkTorch(nn.Module):
         '''
         for layer in self.layers[:-1]:
             x_train = self.activation_func(layer(x_train))
-        return self.layers[-1](x_train)
+        return self.layers[-1](x_train) # returning the output of the last layer as per the task
     
 
     def _backward_pass(self, y_train, output):
@@ -46,14 +46,14 @@ class NeuralNetworkTorch(nn.Module):
         TODO: Implement the backpropagation algorithm responsible for updating the weights of the neural network.
         '''
         loss = self.loss_func(output, y_train.float())
-        loss.backward()
+        loss.backward() # calculating the gradients
     
 
     def _update_weights(self):
         '''
         TODO: Update the network weights according to stochastic gradient descent.
         '''
-        self.optimizer.step()
+        self.optimizer.step() 
     
 
     def _flatten(self, x):
@@ -80,7 +80,7 @@ class NeuralNetworkTorch(nn.Module):
         '''
         x = self._flatten(x)
         output = self._forward_pass(x)
-        return torch.argmax(output, axis=1)
+        return torch.argmax(output, axis=1) # returning the index of the most likely output class as per the task
     
 
     def fit(self, train_loader, val_loader):

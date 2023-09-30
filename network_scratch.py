@@ -56,27 +56,26 @@ class NeuralNetwork():
         for i in range(1, len(self.layer_shapes)):
             self.Z[i-1] = np.dot(self.weights[i-1], self.A[i-1])
             self.A[i] = self.activation_func(self.Z[i-1])
-        return self.A[-1]
+        return self.A[-1] # returning the output of the last layer as per the task
 
     
     def _backward_pass(self, y_train, output):
         '''TODO: Implement the backpropagation algorithm responsible for updating the weights of the neural network.
         The method should return a list of the weight gradients which are used to update the weights in self._update_weights().'''
-        weight_gradients = [None] * len(self.weights)
-        # calculate delta and ensure that the dimensions are correct for the weight gradients
-        delta = self.cost_func_deriv(y_train, output) * self.output_func_deriv(self.Z[-1])
+        weight_gradients = [None] * len(self.weights) # initializing the list of weight gradients
+        delta = self.cost_func_deriv(y_train, output) * self.output_func_deriv(self.Z[-1]) 
         weight_gradients[-1] = np.outer(delta, self.A[-2])
         for i in range(len(self.weights)-2, -1, -1):
             delta = np.dot(self.weights[i+1].T, delta) * self.activation_func_deriv(self.Z[i])
             weight_gradients[i] = np.outer(delta, self.A[i])
-        return weight_gradients
+        return weight_gradients # returning the list of weight gradients
 
 
     def _update_weights(self,weight_gradients):
         '''TODO: Update the network weights according to stochastic gradient descent.'''
         weight_gradients = [self.learning_rate * weight_gradient for weight_gradient in weight_gradients]
         self.weights = [weight - weight_gradient for weight, weight_gradient in zip(self.weights, weight_gradients)]
-        return self.weights
+        return self.weights # updating the weights throguh SGD
     
 
     def _print_learning_progress(self, start_time, iteration, x_train, y_train, x_val, y_val):
@@ -106,7 +105,7 @@ class NeuralNetwork():
         '''TODO: Implement the prediction making of the network.
         The method should return the index of the most likeliest output class'''
         output = self._forward_pass(x)
-        return np.argmax(output)
+        return np.argmax(output) # returning the index of the most likely output class as per the task
 
 
 
